@@ -1,0 +1,9 @@
+**/*.local/
+**/*.ignore/
+**/*.ignore
+**/.vscode/
+**/build/
+
+LibProject/
+!libProject/ffmeg-4.4.4.tar.xz
+kissfft/
