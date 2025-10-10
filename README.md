@@ -35,6 +35,13 @@ git clone https://github.com/mborgerding/kissfft.git
 # Or you could download version 131.1.0 from release in https://github.com/mborgerding/kissfft.git
 ```
 
+## How to Clone the Project
+First, you clone project like normal, and after that:
+```bash
+cd <project-name>
+git submodule update --init --recursive
+```
+
 ## Run the Application
 ```bash
 mkdir build
