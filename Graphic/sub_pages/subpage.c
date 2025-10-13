@@ -8,16 +8,15 @@
 subpage_t *MusicVisualizerPage = NULL;
 
 subpage_t *list_subpages[MAX_SUBPAGES] = {
-    &MusicVisualizerTestPage,
+    (subpage_t*)&MusicVisualizerTestPage,
 };
 
-void SetSubpage(uint16_t index) {
+sub_page_err_code SetSubpage(uint16_t index) {
     if (index >= MAX_SUBPAGES || list_subpages[index] == NULL) {
         printf("Invalid subpage index: %d\n", index);
-        return;
+        return SUB_PAGE_RET_FAIL;
     }
-    MusicVisualizerPage = malloc(list_subpages[index]->subpage_size);
-    if (!MusicVisualizerPage) return;
-    printf("BUG %d\n", list_subpages[index]->subpage_size);
-    memcpy(MusicVisualizerPage, list_subpages[index], list_subpages[index]->subpage_size);
+    MusicVisualizerPage = list_subpages[index];
+    if (!MusicVisualizerPage) return SUB_PAGE_RET_FAIL;
+    return SUB_PAGE_RET_OK;
 }

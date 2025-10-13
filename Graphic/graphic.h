@@ -25,6 +25,8 @@ extern "C" {
 #define GRAPHIC_VER_RES     720
 #define GRAPHIC_COLOR_DEPTH 32
 
+#define PROJECT_PATH "S/home/bmo/Documents/MusicVisualizerV2/Graphic/images_src/"
+
 /* Display buffer size in pixels */
 #define GRAPHIC_DISP_BUF_SIZE (GRAPHIC_HOR_RES * GRAPHIC_VER_RES / 10)
 

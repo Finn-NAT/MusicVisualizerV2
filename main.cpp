@@ -11,7 +11,7 @@
 #include <time.h>
 #include <string.h>
 
-
+pthread_mutex_t lvgl_mutex;
 subpage_value_t value;
 
 void* thread0(void* arg) {
@@ -22,9 +22,13 @@ void* thread0(void* arg) {
 
 void* thread1(void* arg) {
     while (1) {
-        if (MusicVisualizerPage && MusicVisualizerPage->is_initialized) {
+        pthread_mutex_lock(&lvgl_mutex); 
+        if (MusicVisualizerPage && MusicVisualizerPage->state == SUB_PAGE_INIT) {
             MusicVisualizerPage->sub_page_main_function(&value);
+        } else if(MusicVisualizerPage && MusicVisualizerPage->state == SUB_PAGE_DEINIT){
+            MusicVisualizerPage->sub_page_deinit();
         }
+        pthread_mutex_unlock(&lvgl_mutex); 
         usleep(50000); /* 50ms */
     }
     return NULL;
@@ -47,6 +51,8 @@ int main(void)
     printf("Magnitude data pointer: %f\n", value.value[0]);
     mp_start_recording();
 
+    pthread_mutex_init(&lvgl_mutex, NULL);
+
     const int NUM_THREADS = 2;
     pthread_t threads[NUM_THREADS];
     pthread_create(&threads[0], NULL, thread0, NULL);
@@ -57,8 +63,10 @@ int main(void)
     while (1) {
         lv_tick_inc(5);
         /* Handle LVGL tasks */
+        pthread_mutex_lock(&lvgl_mutex); 
         graphic_task_handler();
-        
+        pthread_mutex_unlock(&lvgl_mutex);
+
         /* Sleep for a short time to avoid 100% CPU usage */
         usleep(5000); /* 5ms */
     }

@@ -11,8 +11,8 @@
 #include <libavutil/channel_layout.h>
 #include <libavutil/samplefmt.h>
 #include <libavutil/time.h>
-#include "../kissfft/kiss_fft.h"
-#include "../kissfft/kiss_fftr.h"
+#include "kissfft/kiss_fft.h"
+#include "kissfft/kiss_fftr.h"
 #include "ring_buffer.h"
 
 // Internal data structure

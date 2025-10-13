@@ -11,7 +11,7 @@ set(KISSFFT_ROOT "${CMAKE_SOURCE_DIR}/kissfft")
 # Thêm include directories
 include_directories(
     ${FFMPEG_ROOT}/include
-    ${KISSFFT_ROOT}
+    # ${KISSFFT_ROOT}
 )
 
 include_directories(Graphic)
@@ -48,15 +48,17 @@ if(NOT AVDEVICE_LIB)
     message(FATAL_ERROR "libavdevice không tìm thấy trong ${FFMPEG_ROOT}/lib")
 endif()
 
-# Setup Kiss FFT library
-add_library(kissfft STATIC
-    ${KISSFFT_ROOT}/kiss_fft.c
-    ${KISSFFT_ROOT}/kiss_fftr.c
-)
+# # Setup Kiss FFT library
+# add_library(kissfft STATIC
+#     ${KISSFFT_ROOT}/kiss_fft.c
+#     ${KISSFFT_ROOT}/kiss_fftr.c
+# )
 
-target_include_directories(kissfft PUBLIC ${KISSFFT_ROOT})
+# target_include_directories(kissfft PUBLIC ${KISSFFT_ROOT})
 
 file(GLOB_RECURSE GRAPHIC_SOURCES Graphic/*.c)
+list(FILTER GRAPHIC_SOURCES EXCLUDE REGEX ".*/lvgl\\.remote/.*")
+list(FILTER GRAPHIC_SOURCES EXCLUDE REGEX ".*/lv_drivers\\.remote/.*")
 file(GLOB_RECURSE MUSICPROCESSOR_SOURCES MusicProcessor/*.c)
 
 # Setup executable
@@ -64,7 +66,7 @@ add_executable(musicvisualizer main.cpp ${GRAPHIC_SOURCES} ${MUSICPROCESSOR_SOUR
 
 # Links to libraries
 target_link_libraries(musicvisualizer
-    kissfft
+    # kissfft
     ${AVFORMAT_LIB}
     ${AVCODEC_LIB}
     ${AVUTIL_LIB}

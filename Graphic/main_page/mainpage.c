@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../sub_pages/subpage.h"
+#include <graphic.h>
 
 // Global mainpage instance
 mainpage_t g_mainpage;
 // Project path constant
-static const char* PROJECT_PATH = "S/home/bmo/Documents/MusicVisualizerV2/Graphic/images_src/";
+// static const char* PROJECT_PATH = "S/home/bmo/Documents/MusicVisualizerV2/Graphic/images_src/";
 static uint32_t item_id_counter = 1;
 
 /**********************
@@ -33,27 +34,28 @@ void mainpage_create(lv_obj_t *parent)
     lv_obj_set_size(g_mainpage.main_container, LV_PCT(100), LV_PCT(100));
     lv_obj_set_style_bg_color(g_mainpage.main_container, lv_color_hex(0x2c2c2c), 0);
     lv_obj_clear_flag(g_mainpage.main_container, LV_OBJ_FLAG_SCROLLABLE);
-    // SetSubpage(0);
-    // MusicVisualizerPage -> sub_page_init(g_mainpage.main_container);
+    lv_obj_set_style_pad_all(g_mainpage.main_container, 0, 0);
     
     // Create list widget to contain subpage containers
     g_mainpage.subpage_list = lv_list_create(g_mainpage.main_container);
     lv_obj_set_size(g_mainpage.subpage_list, LV_PCT(100), LV_PCT(100));
     lv_obj_center(g_mainpage.subpage_list);
     
-    // Set scroll properties - QUAN TRỌNG cho việc scroll
-    lv_obj_set_scroll_dir(g_mainpage.subpage_list, LV_DIR_VER);              // Cho phép scroll dọc
-    lv_obj_clear_flag(g_mainpage.subpage_list, LV_OBJ_FLAG_SCROLL_ELASTIC);  // Tắt elastic scroll
-    lv_obj_set_scrollbar_mode(g_mainpage.subpage_list, LV_SCROLLBAR_MODE_AUTO); // Auto scrollbar
+    // Set scroll properties
+    lv_obj_set_scroll_dir(g_mainpage.subpage_list, LV_DIR_VER);             
+    lv_obj_clear_flag(g_mainpage.subpage_list, LV_OBJ_FLAG_SCROLL_ELASTIC);  
+    lv_obj_set_scrollbar_mode(g_mainpage.subpage_list, LV_SCROLLBAR_MODE_AUTO); 
     
     // Set list properties
-    lv_obj_set_style_pad_all(g_mainpage.subpage_list, 15, 0);              // Tăng padding từ 10 -> 15px
-    lv_obj_set_style_pad_row(g_mainpage.subpage_list, 25, 0);               // Khoảng cách giữa các hàng
+    lv_obj_set_style_pad_all(g_mainpage.subpage_list, 30, 0);              
+    lv_obj_set_style_pad_row(g_mainpage.subpage_list, 20, 0);              
     lv_obj_set_style_bg_opa(g_mainpage.subpage_list, LV_OPA_TRANSP, 0);
     lv_obj_set_style_border_opa(g_mainpage.subpage_list, LV_OPA_TRANSP, 0);     
     lv_obj_set_style_outline_opa(g_mainpage.subpage_list, LV_OPA_TRANSP, 0);
 
-    mainpage_add_subpage("Subpage 1", "This is the context for subpage 1.", "test.png");
+    mainpage_add_subpage("Basic Music Visualizer", "This is the basic of music visualizer with a simple bar layout. \
+                                                \nYou can customize it or get example for another Type of Music Visualizer.", 
+                                                "basic_visual_image.png");
     mainpage_add_subpage("Subpage 2", "This is the context for subpage 2.", "test.png");
     mainpage_add_subpage("Subpage 3", "This is the context for subpage 3.", "test.png");
     mainpage_add_subpage("Subpage 4", "This is the context for subpage 4.", "test.png");
@@ -134,15 +136,15 @@ static void mainpage_add_subpage(const char *title, const char *context, const c
     lv_obj_t *title_label = lv_label_create(container);
     lv_label_set_text(title_label, title);
     lv_obj_set_style_text_color(title_label, lv_color_white(), 0);
-    lv_obj_set_style_text_font(title_label, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_font(title_label, &lv_font_montserrat_16, 0);
     lv_obj_align_to(title_label, img, LV_ALIGN_OUT_RIGHT_TOP, 10, 10);
 
     // Add context label
     lv_obj_t *context_label = lv_label_create(container);
     lv_label_set_text(context_label, context);
     lv_obj_set_style_text_color(context_label, lv_color_hex(0xaaaaaa), 0);
-    lv_obj_set_style_text_font(context_label, &lv_font_montserrat_12, 0);
-    lv_obj_align_to(context_label, title_label, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 5);
+    lv_obj_set_style_text_font(context_label, &lv_font_montserrat_14, 0);
+    lv_obj_align_to(context_label, title_label, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 10);
 }
 
 

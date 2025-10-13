@@ -40,6 +40,8 @@ First, you clone project like normal, and after that:
 ```bash
 cd <project-name>
 git submodule update --init --recursive
+cd Graphic/lvgl
+git checkout v8.3.11
 ```
 
 ## Run the Application
