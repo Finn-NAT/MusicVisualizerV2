@@ -44,9 +44,22 @@ git submodule update --init --recursive
 cd Graphic/lvgl
 git checkout v8.3.11
 ```
+Before you run the project, just config the path in lvgl and lv_drivers
+```c
+// From
+#include "lvgl/lvgl.h"
+// To
+#include "../../lvgl/lvgl.h"     
+// In file: sdl.h and sdl_common.h
+```
 
 ## Run the Application
 ```bash
+# If you haven't installed SDL2, just install it
+sudo apt-get install -y libsdl2-dev
+# Or 
+sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-mixer-dev
+
 mkdir build
 cd build
 cmake .. 
