@@ -5,13 +5,11 @@ project(MusicVisualizer)
 set(CMAKE_C_STANDARD 99)
 
 # Path to FFmpeg and Kiss FFT
-set(FFMPEG_ROOT "${CMAKE_SOURCE_DIR}/LibProject/ffmpeg-build")
-set(KISSFFT_ROOT "${CMAKE_SOURCE_DIR}/kissfft")
+set(FFMPEG_ROOT "${CMAKE_SOURCE_DIR}/SharedLib/FFmpeg/ffmpeg-build")
 
-# Thêm include directories
+# Add include directories
 include_directories(
     ${FFMPEG_ROOT}/include
-    # ${KISSFFT_ROOT}
 )
 
 include_directories(Graphic)
@@ -33,19 +31,19 @@ find_library(SWRESAMPLE_LIB swresample PATHS ${FFMPEG_ROOT}/lib NO_DEFAULT_PATH)
 
 # Check if libraries exist
 if(NOT AVFORMAT_LIB)
-    message(FATAL_ERROR "libavformat không tìm thấy trong ${FFMPEG_ROOT}/lib")
+    message(FATAL_ERROR "libavformat not found in ${FFMPEG_ROOT}/lib")
 endif()
 
 if(NOT AVCODEC_LIB)
-    message(FATAL_ERROR "libavcodec không tìm thấy trong ${FFMPEG_ROOT}/lib")
+    message(FATAL_ERROR "libavcodec not found in ${FFMPEG_ROOT}/lib")
 endif()
 
 if(NOT AVUTIL_LIB)
-    message(FATAL_ERROR "libavutil không tìm thấy trong ${FFMPEG_ROOT}/lib")
+    message(FATAL_ERROR "libavutil not found in ${FFMPEG_ROOT}/lib")
 endif()
 
 if(NOT AVDEVICE_LIB)
-    message(FATAL_ERROR "libavdevice không tìm thấy trong ${FFMPEG_ROOT}/lib")
+    message(FATAL_ERROR "libavdevice not found in ${FFMPEG_ROOT}/lib")
 endif()
 
 # # Setup Kiss FFT library

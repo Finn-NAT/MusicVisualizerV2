@@ -5,5 +5,5 @@
 **/.vscode/
 **/build/
 
-LibProject/
-!libProject/ffmeg-4.4.4.tar.xz
+SharedLib/
+!SharedLib/FFmpeg/ffmpeg-4.4.4.tar.xz

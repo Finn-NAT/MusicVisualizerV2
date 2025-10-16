@@ -32,6 +32,7 @@ size_t ring_buffer_write(ring_buffer_t *rb, const ring_buffer_data_t *data, size
     } else {
         memcpy(rb->buffer + rb->current, data, len * sizeof(ring_buffer_data_t));
     }
+    rb->current = (rb->current + len) % rb->size;
     return len;
 }
 

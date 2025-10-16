@@ -1,6 +1,6 @@
 #include "Graphic/graphic.h"
 #include "Graphic/main_page/mainpage.h"
-#include "Graphic/sub_pages/subpage.h"
+#include "Graphic/music_visualizer_pages/mvpage.h"
 #include "Graphic/lvgl/lvgl.h"
 #include "MusicProcessor/musicprocessor.h"
 #include <stdio.h>
@@ -12,7 +12,7 @@
 #include <string.h>
 
 pthread_mutex_t lvgl_mutex;
-subpage_value_t value;
+mv_value_t value;
 
 void* thread0(void* arg) {
     processing_function();
@@ -23,9 +23,9 @@ void* thread0(void* arg) {
 void* thread1(void* arg) {
     while (1) {
         pthread_mutex_lock(&lvgl_mutex); 
-        if (MusicVisualizerPage && MusicVisualizerPage->state == SUB_PAGE_INIT) {
+        if (MusicVisualizerPage && MusicVisualizerPage->state == MV_PAGE_INIT) {
             MusicVisualizerPage->sub_page_main_function(&value);
-        } else if(MusicVisualizerPage && MusicVisualizerPage->state == SUB_PAGE_DEINIT){
+        } else if(MusicVisualizerPage && MusicVisualizerPage->state == MV_PAGE_DEINIT){
             MusicVisualizerPage->sub_page_deinit();
         }
         pthread_mutex_unlock(&lvgl_mutex); 

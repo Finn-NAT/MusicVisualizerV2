@@ -21,8 +21,9 @@ echo $PROJECT_DIR
 
 ### FFmpeg Library
 ```bash
-cd LibProject
-# wget https://ffmpeg.org/releases/ffmpeg-4.4.4.tar.bz2
+cd SharedLib/FFmpeg
+# wget https://ffmpeg.org/releases/ffmpeg-4.4.4.tar.xz
+tar -xf ffmpeg-4.4.4.tar.xz
 cd ffmpeg-4.4.4
 ./configure --enable-shared --enable-static --disable-x86asm --prefix=$PROJECT_DIR/LibProject/ffmpeg-build
 make -j$(nproc)

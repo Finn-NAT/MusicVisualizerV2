@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../sub_pages/subpage.h"
+#include "../music_visualizer_pages/mvpage.h"
 #include <graphic.h>
 
 // Global mainpage instance
