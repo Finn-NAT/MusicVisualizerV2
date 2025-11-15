@@ -1,11 +1,48 @@
 cmake_minimum_required(VERSION 3.10)
+
+# Cross-compile settings for Raspberry Pi (MUST be before project())
+set(CROSS_COMPILE_PREFIX "/home/bmo/Documents/MusicVisualizerV2/SharedLib_Pi/CrossCompiler/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu")
+set(PI_SYSROOT "/home/bmo/Documents/MusicVisualizerV2/SharedLib_Pi/pi-sysroot")
+set(FFMPEG_ROOT "/home/bmo/Documents/MusicVisualizerV2/SharedLib_Pi/FFmpeg/ffmpeg-build")
+
+# Set toolchain BEFORE project()
+set(CMAKE_C_COMPILER "${CROSS_COMPILE_PREFIX}/bin/aarch64-none-linux-gnu-gcc")
+set(CMAKE_CXX_COMPILER "${CROSS_COMPILE_PREFIX}/bin/aarch64-none-linux-gnu-g++")
+
 project(MusicVisualizer)
 
 # Set standard C
 set(CMAKE_C_STANDARD 99)
 
-# Path to FFmpeg and Kiss FFT
-set(FFMPEG_ROOT "${CMAKE_SOURCE_DIR}/SharedLib/FFmpeg/ffmpeg-build")
+# Set sysroot and compile flags
+set(CMAKE_SYSROOT "${PI_SYSROOT}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --sysroot=${PI_SYSROOT}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nostdinc")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isystem ${PI_SYSROOT}/usr/include")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isystem ${PI_SYSROOT}/usr/include/aarch64-linux-gnu")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isystem ${CROSS_COMPILE_PREFIX}/lib/gcc/aarch64-none-linux-gnu/11.2.1/include")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isystem ${CROSS_COMPILE_PREFIX}/lib/gcc/aarch64-none-linux-gnu/11.2.1/include-fixed")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --sysroot=${PI_SYSROOT}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc++")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem ${PI_SYSROOT}/usr/include")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem ${PI_SYSROOT}/usr/include/aarch64-linux-gnu")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem ${PI_SYSROOT}/usr/include/c++/10")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem ${PI_SYSROOT}/usr/include/c++/10/aarch64-linux-gnu")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem ${CROSS_COMPILE_PREFIX}/lib/gcc/aarch64-none-linux-gnu/11.2.1/include")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem ${CROSS_COMPILE_PREFIX}/lib/gcc/aarch64-none-linux-gnu/11.2.1/include-fixed")
+
+# Set linker flags
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L${PI_SYSROOT}/usr/lib/aarch64-linux-gnu")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L${PI_SYSROOT}/lib/aarch64-linux-gnu")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -B${PI_SYSROOT}/usr/lib/aarch64-linux-gnu")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--rpath-link=${PI_SYSROOT}/lib/aarch64-linux-gnu")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--rpath-link=${PI_SYSROOT}/usr/lib/aarch64-linux-gnu")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--dynamic-linker=${PI_SYSROOT}/lib/ld-linux-aarch64.so.1")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--allow-multiple-definition")
+
+message(STATUS "Cross-compiling for Raspberry Pi")
+message(STATUS "Using toolchain: ${CROSS_COMPILE_PREFIX}")
+message(STATUS "Using sysroot: ${PI_SYSROOT}")
 
 # Add include directories
 include_directories(
@@ -14,8 +51,12 @@ include_directories(
 
 include_directories(Graphic)
 include_directories(MusicProcessor)
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
+
+# For Pi cross-compilation, use SDL2 from sysroot
+message(STATUS "Cross-compiling: Using SDL2 from sysroot")
+include_directories(${PI_SYSROOT}/usr/include/SDL2)
+set(SDL2_LIBRARIES SDL2 SDL2main)
+
 
 # Add library directories  
 link_directories(
@@ -46,11 +87,6 @@ if(NOT AVDEVICE_LIB)
     message(FATAL_ERROR "libavdevice not found in ${FFMPEG_ROOT}/lib")
 endif()
 
-# # Setup Kiss FFT library
-# add_library(kissfft STATIC
-#     ${KISSFFT_ROOT}/kiss_fft.c
-#     ${KISSFFT_ROOT}/kiss_fftr.c
-# )
 
 # target_include_directories(kissfft PUBLIC ${KISSFFT_ROOT})
 
@@ -62,26 +98,27 @@ file(GLOB_RECURSE MUSICPROCESSOR_SOURCES MusicProcessor/*.c)
 # Setup executable
 add_executable(musicvisualizer main.cpp ${GRAPHIC_SOURCES} ${MUSICPROCESSOR_SOURCES})
 
-# Links to libraries
+# Cross-compile libraries for Pi - use sysroot libraries  
 target_link_libraries(musicvisualizer
-    # kissfft
     ${AVFORMAT_LIB}
     ${AVCODEC_LIB}
     ${AVUTIL_LIB}
     ${AVDEVICE_LIB}
     ${SWRESAMPLE_LIB}
-    pthread
+    ${PI_SYSROOT}/usr/lib/aarch64-linux-gnu/libasound.so.2.0.0
+    ${PI_SYSROOT}/usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.14.0  
+    ${PI_SYSROOT}/usr/lib/aarch64-linux-gnu/libSDL2main.a
+    ${PI_SYSROOT}/usr/lib/aarch64-linux-gnu/libpthread-2.31.so
+    ${PI_SYSROOT}/usr/lib/gcc/aarch64-linux-gnu/10/libstdc++.a
+    -Wl,--no-as-needed
+    -static-libstdc++
+    -Wl,--as-needed
+    -Wl,--allow-shlib-undefined
     m
+    dl
     z
-    SDL2 
-    SDL2main
 )
 
-# Set RPATH to find shared libraries
-set_target_properties(musicvisualizer PROPERTIES
-    INSTALL_RPATH "${FFMPEG_ROOT}/lib"
-    BUILD_WITH_INSTALL_RPATH TRUE
-)
 
 # Compiler flags
 target_compile_options(musicvisualizer PRIVATE -Wall -Wextra -O2)
