@@ -9,7 +9,7 @@ SharedLib/
 !SharedLib/FFmpeg/ffmpeg-4.4.4.tar.xz
 
 SharedLib_Pi/
-!SharedLib_Pi/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu.tar.xz
+!SharedLib_Pi/CrossCompiler/README.md
 !SharedLib_Pi/FFmpeg/ffmpeg-4.4.4.tar.xz
 !SharedLib_Pi/pi-sysroot/README.md
 
